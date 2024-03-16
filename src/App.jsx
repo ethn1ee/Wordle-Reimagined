@@ -55,14 +55,12 @@ const App = () => {
     }
   }, [guess, currCol, gameOver, ans, history, attempts]);
 
-  let message = "Attempts: " + attempts;
-  if (gameOver) {
-    message = "Congratulations!"
-  }
   return (
     <>
       <Board history={history} guess={guess} ans={ans} gameOver={gameOver} />
-      <p className="message">{message}</p>
+      
+      <p className="message">Attempts: {attempts}</p>
+      {gameOver && <p className="message">Congratulations!</p>}
     </>
   );
 }
