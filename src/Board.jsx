@@ -1,7 +1,7 @@
 import Square from "./Square";
 
 /* eslint-disable react/prop-types */
-const Board = ({ history, guess, ans }) => {
+const Board = ({ history, guess, ans, gameOver }) => {
   return (
     <div className="board">
       <h2 className='title'>Wordle Reimagined</h2>
@@ -14,13 +14,14 @@ const Board = ({ history, guess, ans }) => {
           <Square char={word[4]} charMatch={ans.includes(word[4])} posMatch={ans[4]===word[4]} isCurrent={false}/>
         </div>
       ))}
-      <div className="word-row">
+      {gameOver || 
+        <div className="word-row">
         <Square char={guess[0]} charMatch={ans.includes(guess[0])} posMatch={ans[0]===guess[0]} isCurrent={true}/>
         <Square char={guess[1]} charMatch={ans.includes(guess[1])} posMatch={ans[1]===guess[1]} isCurrent={true}/>
         <Square char={guess[2]} charMatch={ans.includes(guess[2])} posMatch={ans[2]===guess[2]} isCurrent={true}/>
         <Square char={guess[3]} charMatch={ans.includes(guess[3])} posMatch={ans[3]===guess[3]} isCurrent={true}/>
         <Square char={guess[4]} charMatch={ans.includes(guess[4])} posMatch={ans[4]===guess[4]} isCurrent={true}/>
-      </div>
+      </div>}
     </div>
   );
 }

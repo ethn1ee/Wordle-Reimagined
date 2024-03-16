@@ -27,12 +27,13 @@ const App = () => {
         if (e.key === 'Enter' && currCol >= 5) {
           if (words.includes(guess.join(''))) {
             e.preventDefault();
-            setHistory([...history, guess]);
             setGuess(Array(5).fill(null));
+            setHistory([...history, guess]);
             setAttempts(attempts + 1);
             setCurrCol(0);
             if (guess.join('') === ans) {
               setGameOver(true);
+              return;
             }
           } else {
             alert("Not a word!");
@@ -60,7 +61,7 @@ const App = () => {
   }
   return (
     <>
-      <Board history={history} guess={guess} ans={ans} />
+      <Board history={history} guess={guess} ans={ans} gameOver={gameOver} />
       <p className="message">{message}</p>
     </>
   );
