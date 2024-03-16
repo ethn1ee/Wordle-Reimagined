@@ -1,49 +1,47 @@
 import Board from './Board';
 import { useEffect, useState } from 'react';
-import words from '../data/six-letter-words.json';
+import fiveWords from '../data/five-letter-words.json';
+
+const words = fiveWords.map(word => word.toLowerCase());
 
 const App = () => {
-  const [guess, setGuess] = useState(Array(6).fill(Array(6).fill(null)));
-  const [currRow, setCurrRow] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [guess, setGuess] = useState(Array(5).fill(null));
+  const [attempts, setAttempts] = useState(0);
   const [currCol, setCurrCol] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [ans] = useState(words[Math.floor(Math.random() * words.length)]);
-  console.log(ans.toLowerCase());
+  console.log(ans);
 
+  if (gameOver) console.log("Game Over");
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!gameOver) {
-        if (currRow > 5) {
-          setGameOver(true);
-          return;
-        }
-
         if (e.key === 'Backspace' && currCol >= 0) {
-          const newGuess = guess.map(word => [...word]);
-          newGuess[currRow][currCol] = null;
+          const newGuess = [...guess];
+          newGuess[currCol-1] = null;
           setCurrCol(Math.max(currCol - 1, 0));
           setGuess(newGuess);
         }
   
-        if (e.key === 'Enter' && currCol >= 6) {
-          const input = guess[currRow].join('');
-          if (words.includes(input)) {
+        if (e.key === 'Enter' && currCol >= 5) {
+          if (words.includes(guess.join(''))) {
             e.preventDefault();
-            setCurrRow(currRow + 1);
+            setHistory([...history, guess]);
+            setGuess(Array(5).fill(null));
+            setAttempts(attempts + 1);
             setCurrCol(0);
-            if (input === ans) {
+            if (guess.join('') === ans) {
               setGameOver(true);
             }
           } else {
             alert("Not a word!");
           }
         }
-        
-        if (currCol > 5) return;
   
-        if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
-          const newGuess = guess.map(word => [...word]);
-          newGuess[currRow][currCol] = e.key;
+        if (e.key.length === 1 && e.key.match(/[a-z]/i) && currCol <= 4) {
+          const newGuess = [...guess];
+          newGuess[currCol] = e.key;
           setGuess(newGuess);
           setCurrCol(currCol + 1);
         }
@@ -54,11 +52,16 @@ const App = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     }
-  }, [guess, currRow, currCol, gameOver, ans]);
+  }, [guess, currCol, gameOver, ans, history, attempts]);
 
+  let message = "Attempts: " + attempts;
+  if (gameOver) {
+    message = "Congratulations!"
+  }
   return (
     <>
-      <Board guess={guess} ans={ans} currRow={currRow}/>
+      <Board history={history} guess={guess} ans={ans} />
+      <p className="message">{message}</p>
     </>
   );
 }
